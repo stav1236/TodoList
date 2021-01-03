@@ -1,9 +1,13 @@
 import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.css";
 
 class ToDoList extends Component {
   constructor(props) {
     super(props);
-    this.state = { missions: [1, 2, 3], selectedMission: null };
+    this.state = {
+      missions: ["לצחצח שיניים", "לקרוא ספר", "לישון"],
+      selectedMission: null,
+    };
   }
 
   addiMission = () => {
@@ -30,14 +34,24 @@ class ToDoList extends Component {
     await this.setState({
       selectedMission: event.target.value,
     });
+    if (event.target.className.includes("active")) {
+      event.target.className = " list-group-item";
+    } else {
+      event.target.className += " active";
+    }
   };
 
   render() {
     return (
       <div>
-        <ul>
+        <ul className="list-group w-25">
           {this.state.missions.map((mission, index) => (
-            <li onClick={this.updateSelectedMission} value={index} key={index}>
+            <li
+              className="list-group-item"
+              onClick={this.updateSelectedMission}
+              value={index}
+              key={index}
+            >
               {mission}
             </li>
           ))}
