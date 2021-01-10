@@ -1,8 +1,12 @@
-import React, { Component } from 'react';
-import ToDoList from './ToDoList.js'
-class App extends Component  {
+import React, { Component } from "react";
+import ToDoList from "./ToDoList.js";
+class App extends Component {
   render() {
-    return <ToDoList></ToDoList>;
+    return (
+      <div>
+        <ToDoList> </ToDoList>
+      </div>
+    );
   }
 }
 

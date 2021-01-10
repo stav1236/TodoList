@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
+const activeMissionClass = "list-group-item active";
+const unActiveMissionClass = "list-group-item";
+
 class ToDoList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       missions: ["לצחצח שיניים", "לקרוא ספר", "לישון"],
-      selectedMission: null,
+      selectedMissions: [],
     };
   }
 
@@ -20,24 +23,32 @@ class ToDoList extends Component {
   };
 
   removeMission = () => {
-    const array = [...this.state.missions];
-    if (this.state.selectedMission != null) {
-      array.splice(this.state.selectedMission, 1);
-    }
+    let array = [...this.state.missions];
+    [...this.state.selectedMissions].forEach((indexToRemove) => {
+      array.splice(indexToRemove, 1);
+    });
     this.setState({
       missions: [...array],
-      selectedMission: null,
+      selectedMissions: [],
     });
+    document.getElementsByClassName(
+      activeMissionClass
+    )[0].className = unActiveMissionClass;
   };
 
   updateSelectedMission = async (event) => {
-    await this.setState({
-      selectedMission: event.target.value,
-    });
-    if (event.target.className.includes("active")) {
-      event.target.className = " list-group-item";
+    if (event.target.className.includes(activeMissionClass)) {
+      await this.setState({
+        selectedMissions: [...this.state.selectedMissions].filter(
+          (item) => item !== event.target.value
+        ),
+      });
+      event.target.className = unActiveMissionClass;
     } else {
-      event.target.className += " active";
+      await this.setState({
+        selectedMissions: [...this.state.selectedMissions, event.target.value],
+      });
+      event.target.className = activeMissionClass;
     }
   };
 
