@@ -1,8 +1,38 @@
 import React, { Component } from "react";
-import "bootstrap/dist/css/bootstrap.css";
+import TextField from "@material-ui/core/TextField";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import { lightGreen, red, grey } from "@material-ui/core/colors";
+import { withStyles } from "@material-ui/core/styles";
+import alertify from "alertifyjs";
+import "alertifyjs/build/css/alertify.css";
 
-const activeMissionClass = "list-group-item active";
-const unActiveMissionClass = "list-group-item";
+const AddButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(lightGreen.A400),
+    backgroundColor: lightGreen.A400,
+    "&:hover": {
+      backgroundColor: lightGreen.A700,
+    },
+    border: "0.1vw solid",
+    borderColor: grey[900],
+  },
+}))(Button);
+
+const DeleteButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(red[500]),
+    backgroundColor: red[500],
+    "&:hover": {
+      backgroundColor: red[600],
+    },
+    border: "0.1vw solid",
+    borderColor: grey[900],
+  },
+}))(Button);
 
 class ToDoList extends Component {
   constructor(props) {
@@ -14,63 +44,77 @@ class ToDoList extends Component {
   }
 
   addiMission = () => {
-    this.setState({
-      missions: [
-        ...this.state.missions,
-        document.getElementById("missionName").value,
-      ],
-    });
+    const HebrewChars = new RegExp("^[\u0590-\u05FF]+$");
+    const missionName = document.getElementById("newMissionNameInput").value;
+    if (!missionName) {
+      alertify.warning("יש להכניס שם משימה");
+    } else if (this.state.missions.includes(missionName)) {
+      alertify.warning("לא ניתן להוסיף משימה קיימת");
+    } else if (!HebrewChars.test(missionName)) {
+      alertify.warning("שם משימה יכול להכיל רק אותיות");
+
+    } else {
+      this.setState({
+        missions: [...this.state.missions, missionName],
+      });
+    }
   };
 
   removeMission = () => {
     let array = [...this.state.missions];
-    [...this.state.selectedMissions].forEach((indexToRemove) => {
+    [...this.state.selectedMissions].forEach((missionNameToRemove) => {
+      const indexToRemove = this.state.missions.indexOf(missionNameToRemove);
       array.splice(indexToRemove, 1);
     });
     this.setState({
       missions: [...array],
       selectedMissions: [],
     });
-    document.getElementsByClassName(
-      activeMissionClass
-    )[0].className = unActiveMissionClass;
   };
 
   updateSelectedMission = async (event) => {
-    if (event.target.className.includes(activeMissionClass)) {
+    const selectedMissionName = event.target.innerText;
+    if (this.state.selectedMissions.includes(selectedMissionName)) {
       await this.setState({
         selectedMissions: [...this.state.selectedMissions].filter(
-          (item) => item !== event.target.value
+          (item) => item !== selectedMissionName
         ),
       });
-      event.target.className = unActiveMissionClass;
     } else {
       await this.setState({
-        selectedMissions: [...this.state.selectedMissions, event.target.value],
+        selectedMissions: [...this.state.selectedMissions, selectedMissionName],
       });
-      event.target.className = activeMissionClass;
     }
   };
 
   render() {
     return (
-      <div>
-        <ul className="list-group w-25">
+      <Box width="25%">
+        <List>
           {this.state.missions.map((mission, index) => (
-            <li
-              className="list-group-item"
+            <ListItem
+              style={{ textAlign: "center" }}
+              divider={true}
               onClick={this.updateSelectedMission}
-              value={index}
+              button
               key={index}
+              selected={this.state.selectedMissions.includes(mission)}
             >
-              {mission}
-            </li>
+              <ListItemText primary={mission} value={index} />
+            </ListItem>
           ))}
-        </ul>
-        <input id="missionName"></input>
-        <button onClick={this.addiMission}>Add</button>
-        <button onClick={this.removeMission}>Remove</button>
-      </div>
+        </List>
+        <TextField
+          id="newMissionNameInput"
+          size="small"
+          label="שם משימה"
+          variant="outlined"
+        ></TextField>
+        <AddButton onClick={this.addiMission}>Add</AddButton>
+        <DeleteButton border={6} onClick={this.removeMission}>
+          Remove
+        </DeleteButton>
+      </Box>
     );
   }
 }
