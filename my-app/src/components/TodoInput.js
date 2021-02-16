@@ -33,7 +33,7 @@ const TodoInput = () => {
     setTodo(event.target.value);
   };
   const onSubmit = (event) => {
-    const HebrewChars = new RegExp("^[\u0590-\u05FF]+$");
+    const HebrewChars = new RegExp("^[\u0590-\u05FF ]+$");
     event.preventDefault();
     if (!currentTodo) {
       alertify.warning(emptyMissionWarning);

@@ -1,16 +1,8 @@
-import { createStore } from 'redux';
+import { createStore } from "redux";
+import { todoListData } from "./data.js";
 
 const initialState = {
-  todos: [
-    {
-      name: 'לקרוא ספר',
-      complete: false
-    },
-    {
-      name: 'לסיים לחפיפה',
-      complete: false
-    }
-  ]
+  todos: [...todoListData],
 };
 
 export const store = createStore(
@@ -19,26 +11,27 @@ export const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 // Reducer
+
 function reducer(state, action) {
   switch (action.type) {
-    case 'ADD_TODO':
+    case "ADD_TODO":
       return {
         ...state,
-        todos: [...state.todos, action.payload]
+        todos: [...state.todos, action.payload],
       };
-    case 'TOGGLE_TODO':
+    case "TOGGLE_TODO":
       return {
         ...state,
         todos: state.todos.map((todo) =>
           todo.name === action.payload
             ? { ...todo, complete: !todo.complete }
             : todo
-        )
+        ),
       };
-    case 'DELETE_TODO':
+    case "DELETE_TODO":
       return {
         ...state,
-        todos: state.todos.filter((todo) => todo.name !== action.payload)
+        todos: state.todos.filter((todo) => todo.name !== action.payload),
       };
     default:
       return state;
@@ -46,16 +39,16 @@ function reducer(state, action) {
 }
 // Actions
 export const addTodoAction = (todo) => ({
-  type: 'ADD_TODO',
-  payload: todo
+  type: "ADD_TODO",
+  payload: todo,
 });
 
 export const toggleTodoComplete = (todoName) => ({
-  type: 'TOGGLE_TODO',
-  payload: todoName
+  type: "TOGGLE_TODO",
+  payload: todoName,
 });
 
 export const deleteTodoAction = (todoName) => ({
-  type: 'DELETE_TODO',
-  payload: todoName
+  type: "DELETE_TODO",
+  payload: todoName,
 });
