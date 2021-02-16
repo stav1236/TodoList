@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleTodoComplete, deleteTodoAction } from "../redux";
+import { toggleTodoComplete, deleteTodoAction, setTodos } from "../redux";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -9,8 +9,21 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 const TodoList = () => {
   const todos = useSelector((state) => state.todos);
+  const SERVER_ADDRESS = "http://localhost:4567/";
+
   // Get dispatch
   const dispatch = useDispatch();
+
+  const getAllTodoFromServer = async () => {
+    const response = await fetch(`${SERVER_ADDRESS}allMissions`);
+    const allMissionsData = await response.json();
+    const setList = () => dispatch(setTodos(allMissionsData));
+    setList();
+  };
+  window.addEventListener("DOMContentLoaded", (event) => {
+    getAllTodoFromServer();
+  });
+
   // Set reference functions by wrapping action creators with dispatch
   // (using this instread of useActions since that's been removed)
   const toggleTodo = (todoName) => dispatch(toggleTodoComplete(todoName));

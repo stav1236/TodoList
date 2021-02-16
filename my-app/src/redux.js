@@ -1,8 +1,7 @@
 import { createStore } from "redux";
-import { todoListData } from "./data.js";
 
 const initialState = {
-  todos: [...todoListData],
+  todos: []
 };
 
 export const store = createStore(
@@ -14,6 +13,11 @@ export const store = createStore(
 
 function reducer(state, action) {
   switch (action.type) {
+    case "SET_TODOS":
+      return {
+        ...state,
+        todos: action.payload,
+      };
     case "ADD_TODO":
       return {
         ...state,
@@ -51,4 +55,9 @@ export const toggleTodoComplete = (todoName) => ({
 export const deleteTodoAction = (todoName) => ({
   type: "DELETE_TODO",
   payload: todoName,
+});
+
+export const setTodos = (todoList) => ({
+  type: "SET_TODOS",
+  payload: todoList,
 });
