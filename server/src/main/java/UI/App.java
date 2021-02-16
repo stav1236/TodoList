@@ -3,7 +3,7 @@ package UI;
 import java.util.HashMap;
 
 import Business.MissionBusiness;
-import com.google.gson.GsonBuilder;
+import Models.Mission;
 import spark.*;
 import com.google.gson.Gson;
 
@@ -25,31 +25,24 @@ public final class App {
         MissionBusiness missionBusiness = new MissionBusiness();
 
         Gson gsonIncludedAllFields = new Gson();
-        Gson gsonIncludeJustExpose = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-                .create();
 
         App.apply(); // Call this before mapping thy routes
 
         //Back To The Future
         Spark.get("/allMissions", ((request, response) -> gsonIncludedAllFields.toJson(missionBusiness.getALlMissions())));
-//        Spark.get("/specificYoungDetails/:id", ((request, response) -> {
-//            int youngId = Integer.parseInt(request.params(":id"));
-//            return gsonIncludedAllFields.toJson(youngBusiness.specificDetailsOfYoung(youngId));
-//        }));
-//        Spark.post("/insertYoung", ((request, response) -> {
-//            Young newYoung = gsonIncludedAllFields.fromJson(request.body(), Young.class);
-//            String responseBody = youngBusiness.addYoungByObject(newYoung);
-//            if(responseBody != "success")
-//                response.status(500);
-//            return responseBody;
-//        }));
-////
-//        Spark.post("/removeYoung/:id", ((request, response) -> {
-//            int idToDelete = Integer.parseInt(request.params(":id"));
-//            String responseBody =youngBusiness.removeYoungById(idToDelete);
-//            if(responseBody != "success")
-//                response.status(500);
-//            return responseBody;
-//        }));
+        Spark.post("/insertMission", ((request, response) -> {
+            Mission newMission = gsonIncludedAllFields.fromJson(request.body(), Mission.class);
+            String responseBody = missionBusiness.addMssion(newMission);
+            if(!responseBody.equals("success"))
+                response.status(500);
+            return responseBody;
+        }));
+        Spark.post("/removeMission", ((request, response) -> {
+            Long missionIdToDelete = Long.parseLong(request.body());
+            String responseBody =missionBusiness.removeMissionById(missionIdToDelete);
+            if(!responseBody.equals("success"))
+                response.status(500);
+            return responseBody;
+        }));
     }
 }

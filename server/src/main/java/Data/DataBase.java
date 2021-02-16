@@ -51,8 +51,8 @@ public class DataBase {
         writeDataToDB();
     }
 
-    public void delete(Mission newMission) throws IOException {
-        this.missions.remove(newMission);
+    public void delete(Mission mission) throws IOException {
+        this.missions.remove(mission);
         writeDataToDB();
     }
 

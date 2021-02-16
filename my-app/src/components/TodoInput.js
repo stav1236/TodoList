@@ -20,6 +20,8 @@ const AddButton = withStyles((theme) => ({
   },
 }))(Button);
 
+const SERVER_ADDRESS = "http://localhost:4567/";
+
 const TodoInput = () => {
   const emptyMissionWarning = "יש להכניס שם משימה";
   const existMissionWarning = "לא ניתן להוסיף משימה קיימת";
@@ -28,7 +30,16 @@ const TodoInput = () => {
   const todosList = useSelector((state) => state.todos);
   const [currentTodo, setTodo] = useState("");
   const dispatch = useDispatch();
-  const addTodo = (currentTodo) => dispatch(addTodoAction(currentTodo));
+  const addTodo = async (currentTodo) => {
+    const response = await fetch(`${SERVER_ADDRESS}insertMission`, {
+      method: "POST",
+      body: JSON.stringify(currentTodo),
+    });
+    const responseText = await response.text();
+    console.log(responseText);
+
+    dispatch(addTodoAction(currentTodo));
+  };
   const onChange = (event) => {
     setTodo(event.target.value);
   };
@@ -43,6 +54,7 @@ const TodoInput = () => {
       alertify.warning(hebrewLettersnWarning);
     } else {
       addTodo({
+        id: Date.now(),
         name: currentTodo,
         complete: false,
       });

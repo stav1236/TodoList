@@ -7,9 +7,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 
+const SERVER_ADDRESS = "http://localhost:4567/";
+
 const TodoList = () => {
   const todos = useSelector((state) => state.todos);
-  const SERVER_ADDRESS = "http://localhost:4567/";
 
   // Get dispatch
   const dispatch = useDispatch();
@@ -27,7 +28,13 @@ const TodoList = () => {
   // Set reference functions by wrapping action creators with dispatch
   // (using this instread of useActions since that's been removed)
   const toggleTodo = (todoName) => dispatch(toggleTodoComplete(todoName));
-  const deleteTodo = (todoName) => dispatch(deleteTodoAction(todoName));
+  const deleteTodo = async (todo) => {
+    await fetch(`${SERVER_ADDRESS}removeMission`, {
+      method: "POST",
+      body: JSON.stringify(todo.id),
+    });
+    dispatch(deleteTodoAction(todo.name));
+  };
 
   return (
     <List className="todo-list">
@@ -43,7 +50,7 @@ const TodoList = () => {
             <IconButton>
               <DeleteIcon
                 className="delete-button"
-                onClick={deleteTodo.bind(null, todo.name)}
+                onClick={deleteTodo.bind(null, todo)}
               ></DeleteIcon>
             </IconButton>
           </Tooltip>
