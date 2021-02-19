@@ -1,7 +1,6 @@
 package Data;
 
 import Models.Mission;
-import Models.Young;
 
 import com.google.gson.Gson;
 
@@ -10,12 +9,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class DataBase {
     //Singleton class
+    private static final String DB_PATH = "src/main/resources/db.json";
     private static DataBase dataBase = null;
     public ArrayList<Mission> missions;
 
@@ -26,21 +24,19 @@ public class DataBase {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray = null;
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader("src/main/resources/db.json"));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(DB_PATH));
             for (Object var : jsonArray) {
                 Mission mission = gson.fromJson(var.toString(), Mission.class);
                 missions.add(mission);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
 
     public void writeDataToDB() throws IOException {
         Gson gsonIncludedAllFields = new Gson();
-        try (FileWriter file = new FileWriter("src/main/resources/db.json")) {
+        try (FileWriter file = new FileWriter(DB_PATH)) {
             file.write(gsonIncludedAllFields.toJson(this.missions));
             file.flush();
         }

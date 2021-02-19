@@ -12,7 +12,6 @@ const SERVER_ADDRESS = "http://localhost:4567/";
 const TodoList = () => {
   const todos = useSelector((state) => state.todos);
 
-  // Get dispatch
   const dispatch = useDispatch();
 
   const getAllTodoFromServer = async () => {
@@ -25,9 +24,13 @@ const TodoList = () => {
     getAllTodoFromServer();
   });
 
-  // Set reference functions by wrapping action creators with dispatch
-  // (using this instread of useActions since that's been removed)
-  const toggleTodo = (todoName) => dispatch(toggleTodoComplete(todoName));
+  const toggleTodo = async (todo) => {
+    await fetch(`${SERVER_ADDRESS}checkMission`, {
+      method: "POST",
+      body: JSON.stringify(todo.id),
+    });
+    dispatch(toggleTodoComplete(todo.name));
+  };
   const deleteTodo = async (todo) => {
     await fetch(`${SERVER_ADDRESS}removeMission`, {
       method: "POST",
@@ -43,7 +46,7 @@ const TodoList = () => {
           <input
             type="checkbox"
             checked={todo.complete}
-            onChange={toggleTodo.bind(null, todo.name)}
+            onChange={toggleTodo.bind(null, todo)}
           />
           <span className={todo.complete ? "complete" : null}>{todo.name}</span>
           <Tooltip title="מחק">

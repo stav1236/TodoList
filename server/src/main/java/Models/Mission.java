@@ -12,8 +12,11 @@ public class Mission {
         return id;
     }
 
+    public void changeCompleteMode() {
+        this.complete = !(this.complete);
+    }
 
-    public Mission(Long id,String name, Boolean complete) {
+    public Mission(Long id, String name, Boolean complete) {
         this.id = id;
         this.name = name;
         this.complete = complete;
