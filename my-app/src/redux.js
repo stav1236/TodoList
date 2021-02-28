@@ -1,17 +1,6 @@
 import { createStore } from "redux";
 
-const initialState = {
-  todos: []
-};
-
-export const store = createStore(
-  reducer,
-  initialState,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-// Reducer
-
-function reducer(state, action) {
+const reducer = (state, action) => {
   switch (action.type) {
     case "SET_TODOS":
       return {
@@ -41,7 +30,7 @@ function reducer(state, action) {
       return state;
   }
 }
-// Actions
+
 export const addTodoAction = (todo) => ({
   type: "ADD_TODO",
   payload: todo,
@@ -61,3 +50,13 @@ export const setTodos = (todoList) => ({
   type: "SET_TODOS",
   payload: todoList,
 });
+
+const initialState = {
+  todos: []
+};
+
+export const store = createStore(
+  reducer,
+  initialState,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
