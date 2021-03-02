@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTodoComplete, deleteTodoAction, setTodos } from "../redux";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import {
+  List,
+  ListItem,
+  Tooltip,
+  IconButton,
+  Checkbox,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
 
 const SERVER_ADDRESS = "http://localhost:4567/";
 
 const TodoList = () => {
+  useEffect(() => {
+    getAllTodoFromServer();
+  });
+
   const todos = useSelector((state) => state.todos);
 
   const dispatch = useDispatch();
@@ -17,38 +24,34 @@ const TodoList = () => {
   const getAllTodoFromServer = async () => {
     const response = await fetch(`${SERVER_ADDRESS}allMissions`);
     const allMissionsData = await response.json();
-    const setList = () => dispatch(setTodos(allMissionsData));
-    setList();
+    dispatch(setTodos(allMissionsData));
   };
-  window.addEventListener("DOMContentLoaded", (event) => {
-    getAllTodoFromServer();
-  });
 
-  const toggleTodo = async (todo) => {
+  const toggleTodo = async (todoId) => {
     await fetch(`${SERVER_ADDRESS}checkMission`, {
       method: "POST",
-      body: JSON.stringify(todo.id),
+      body: JSON.stringify(todoId),
     });
-    dispatch(toggleTodoComplete(todo.name));
+    dispatch(toggleTodoComplete(todoId));
   };
+
   const deleteTodo = async (todo) => {
     await fetch(`${SERVER_ADDRESS}removeMission`, {
       method: "POST",
       body: JSON.stringify(todo.id),
     });
-    dispatch(deleteTodoAction(todo.name));
+    dispatch(deleteTodoAction(todo.id));
   };
 
   return (
     <List className="todo-list">
       {todos.map((todo) => (
-        <ListItem key={todo.name}>
-          <input
-            type="checkbox"
+        <ListItem key={todo.id}>
+          <Checkbox
             checked={todo.complete}
-            onChange={toggleTodo.bind(null, todo)}
+            onChange={toggleTodo.bind(null, todo.id)}
           />
-          <span className={todo.complete ? "complete" : null}>{todo.name}</span>
+          <span>{todo.name}</span>
           <Tooltip title="מחק">
             <IconButton>
               <DeleteIcon

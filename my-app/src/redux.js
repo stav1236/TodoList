@@ -16,7 +16,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         todos: state.todos.map((todo) =>
-          todo.name === action.payload
+          todo.id === action.payload
             ? { ...todo, complete: !todo.complete }
             : todo
         ),
@@ -24,7 +24,7 @@ const reducer = (state, action) => {
     case "DELETE_TODO":
       return {
         ...state,
-        todos: state.todos.filter((todo) => todo.name !== action.payload),
+        todos: state.todos.filter((todo) => todo.id !== action.payload),
       };
     default:
       return state;

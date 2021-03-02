@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { addTodoAction } from "../redux";
 import { useDispatch, useSelector } from "react-redux";
-import alertify from "alertifyjs";
 import "alertifyjs/build/css/alertify.css";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { lightGreen, grey } from "@material-ui/core/colors";
 import { withStyles } from "@material-ui/core/styles";
+import Swal from "sweetalert2";
 
 const AddButton = withStyles((theme) => ({
   root: {
@@ -20,42 +20,64 @@ const AddButton = withStyles((theme) => ({
   },
 }))(Button);
 
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+});
+
 const SERVER_ADDRESS = "http://localhost:4567/";
+const emptyMissionWarning = "יש להכניס שם משימה";
+const existMissionWarning = "לא ניתן להוסיף משימה קיימת";
+const newMissionAddingMsg = "נוספה משימה";
+const WARNING_ICON = "warning";
+const SUCCESS_ICON = "success";
 
 const TodoInput = () => {
-  const emptyMissionWarning = "יש להכניס שם משימה";
-  const existMissionWarning = "לא ניתן להוסיף משימה קיימת";
-  const hebrewLettersnWarning = "שם משימה יכול להכיל רק אותיות בעברית";
-
   const todosList = useSelector((state) => state.todos);
-  const [currentTodo, setTodo] = useState("");
+  const [newToDoText, setTodo] = useState("");
   const dispatch = useDispatch();
-  const addTodo = async (currentTodo) => {
-    const response = await fetch(`${SERVER_ADDRESS}insertMission`, {
-      method: "POST",
-      body: JSON.stringify(currentTodo),
-    });
-    const responseText = await response.text();
-    console.log(responseText);
 
-    dispatch(addTodoAction(currentTodo));
+  const addTodo = async (newToDo) => {
+    await fetch(`${SERVER_ADDRESS}insertMission`, {
+      method: "POST",
+      body: JSON.stringify(newToDo),
+    });
+    dispatch(addTodoAction(newToDo));
+    Toast.fire({
+      icon: SUCCESS_ICON,
+      title: newMissionAddingMsg,
+    });
   };
+
   const onChange = (event) => {
     setTodo(event.target.value);
   };
+
+  const isTodoWithTheSameName = () => {
+    return [...todosList].find(
+      (currentTodo) => currentTodo.name === newToDoText
+    );
+  };
+
   const onSubmit = (event) => {
-    const HebrewChars = new RegExp("^[\u0590-\u05FF ]+$");
     event.preventDefault();
-    if (!currentTodo) {
-      alertify.warning(emptyMissionWarning);
-    } else if ([...todosList].find((myTodo) => myTodo.name === currentTodo)) {
-      alertify.warning(existMissionWarning);
-    } else if (!HebrewChars.test(currentTodo)) {
-      alertify.warning(hebrewLettersnWarning);
+    if (!newToDoText) {
+      Toast.fire({
+        icon: WARNING_ICON,
+        title: emptyMissionWarning,
+      });
+    } else if (isTodoWithTheSameName()) {
+      Toast.fire({
+        icon: WARNING_ICON,
+        title: existMissionWarning,
+      });
     } else {
       addTodo({
         id: Date.now(),
-        name: currentTodo,
+        name: newToDoText,
         complete: false,
       });
     }
@@ -63,18 +85,20 @@ const TodoInput = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <TextField
-        id="newMissionNameInput"
-        size="small"
-        label="שם משימה"
-        variant="outlined"
-        type="text"
-        value={currentTodo}
-        onChange={onChange}
-      />
-      <AddButton type="submit">הוסף</AddButton>
-    </form>
+    <div>
+      <form onSubmit={onSubmit}>
+        <TextField
+          id="newMissionNameInput"
+          size="small"
+          label="שם משימה"
+          variant="outlined"
+          type="text"
+          value={newToDoText}
+          onChange={onChange}
+        />
+        <AddButton type="submit">הוסף</AddButton>
+      </form>
+    </div>
   );
 };
 

@@ -9,19 +9,19 @@ public class MissionBusiness {
     private static final String SUCCESS_MSG = "success";
     private static final String WRITE_TO_DB_ERROR = "no write to db error";
     private static final String NO_FOUND_ERROR = "mission don't exist";
-    private static final String INVALID_INPUT_ERROR = "mission don't exist";
-
+    private static final String EXISTING_MISSION_ERROR = "mission already exist";
 
     public ArrayList<Mission> getALlMissions(){
         return DataBase.getInstance().missions;
     }
+
     public String addMssion (Mission newMission){
         if (newMission != null) {
-            Mission existedYoung = getALlMissions().stream()
-                    .filter(mission -> newMission.getName().equals(mission.getName()))
+            Mission existedMission = getALlMissions().stream()
+                    .filter(mission -> newMission.getId().equals(mission.getId()))
                     .findAny()
                     .orElse(null);
-            if (existedYoung == null) {
+            if (existedMission == null) {
                 try {
                     DataBase.getInstance().insert(newMission);
                 } catch (IOException e) {
@@ -32,7 +32,7 @@ public class MissionBusiness {
                 return NO_FOUND_ERROR;
             }
         } else {
-            return INVALID_INPUT_ERROR;
+            return EXISTING_MISSION_ERROR;
         }
     }
 
@@ -57,23 +57,18 @@ public class MissionBusiness {
     }
 
     public String changeStatusById(Long missionId){
-        ArrayList<Mission> missions = getALlMissions();
-        Mission missionToDelete = null;
         for (Mission mission:
                 getALlMissions()) {
             if (mission.getId().equals(missionId)){
                 mission.changeCompleteMode();
+                try {
+                    DataBase.getInstance().writeDataToDB();
+                } catch (IOException e) {
+                    return WRITE_TO_DB_ERROR;
+                }
+                return SUCCESS_MSG;
             }
         }
-        if (missionToDelete != null) {
-            try {
-                DataBase.getInstance().writeDataToDB();
-            } catch (IOException e) {
-                return WRITE_TO_DB_ERROR;
-            }
-            return SUCCESS_MSG;
-        } else {
-            return NO_FOUND_ERROR;
-        }
+        return NO_FOUND_ERROR;
     }
 }
