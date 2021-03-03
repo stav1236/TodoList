@@ -28,7 +28,8 @@ const Toast = Swal.mixin({
   timerProgressBar: true,
 });
 
-const SERVER_ADDRESS = "http://localhost:4567/";
+const {REACT_APP_SERVER_ADDRESS} = process.env;
+
 const emptyMissionWarning = "יש להכניס שם משימה";
 const existMissionWarning = "לא ניתן להוסיף משימה קיימת";
 const newMissionAddingMsg = "נוספה משימה";
@@ -36,12 +37,14 @@ const WARNING_ICON = "warning";
 const SUCCESS_ICON = "success";
 
 const TodoInput = () => {
+  console.log(process.env)
+
   const todosList = useSelector((state) => state.todos);
   const [newToDoText, setTodo] = useState("");
   const dispatch = useDispatch();
 
   const addTodo = async (newToDo) => {
-    await fetch(`${SERVER_ADDRESS}insertMission`, {
+    await fetch(`${REACT_APP_SERVER_ADDRESS}insertMission`, {
       method: "POST",
       body: JSON.stringify(newToDo),
     });

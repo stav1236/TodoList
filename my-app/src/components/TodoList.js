@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-const SERVER_ADDRESS = "http://localhost:4567/";
+const {REACT_APP_SERVER_ADDRESS} = process.env;
 
 const TodoList = () => {
   useEffect(() => {
@@ -22,25 +22,25 @@ const TodoList = () => {
   const dispatch = useDispatch();
 
   const getAllTodoFromServer = async () => {
-    const response = await fetch(`${SERVER_ADDRESS}allMissions`);
+    const response = await fetch(`${REACT_APP_SERVER_ADDRESS}allMissions`);
     const allMissionsData = await response.json();
     dispatch(setTodos(allMissionsData));
   };
 
   const toggleTodo = async (todoId) => {
-    await fetch(`${SERVER_ADDRESS}checkMission`, {
+    await fetch(`${REACT_APP_SERVER_ADDRESS}checkMission`, {
       method: "POST",
       body: JSON.stringify(todoId),
     });
     dispatch(toggleTodoComplete(todoId));
   };
 
-  const deleteTodo = async (todo) => {
-    await fetch(`${SERVER_ADDRESS}removeMission`, {
+  const deleteTodo = async (todoId) => {
+    await fetch(`${REACT_APP_SERVER_ADDRESS}removeMission`, {
       method: "POST",
-      body: JSON.stringify(todo.id),
+      body: JSON.stringify(todoId),
     });
-    dispatch(deleteTodoAction(todo.id));
+    dispatch(deleteTodoAction(todoId));
   };
 
   return (
@@ -48,15 +48,16 @@ const TodoList = () => {
       {todos.map((todo) => (
         <ListItem key={todo.id}>
           <Checkbox
+            color="primary"
             checked={todo.complete}
-            onChange={toggleTodo.bind(null, todo.id)}
+            onClick={() => toggleTodo(todo.id)}
           />
           <span>{todo.name}</span>
           <Tooltip title="מחק">
             <IconButton>
               <DeleteIcon
                 className="delete-button"
-                onClick={deleteTodo.bind(null, todo)}
+                onClick={() => deleteTodo(todo.id)}
               ></DeleteIcon>
             </IconButton>
           </Tooltip>
