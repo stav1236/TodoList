@@ -22,13 +22,13 @@ public class DataBase {
         this.missions = new ArrayList<>();
         Gson gson = new Gson();
         JSONParser jsonParser = new JSONParser();
-        JSONArray jsonArray = null;
+        JSONArray jsonArray;
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader(DB_PATH));
-            for (Object var : jsonArray) {
-                Mission mission = gson.fromJson(var.toString(), Mission.class);
+            jsonArray.forEach(jsonObject -> {
+                Mission mission = gson.fromJson(jsonObject.toString(), Mission.class);
                 missions.add(mission);
-            }
+            });
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }

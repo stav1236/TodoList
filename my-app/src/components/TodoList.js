@@ -1,16 +1,12 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+
 import { toggleTodoComplete, deleteTodoAction, setTodos } from "../redux";
-import {
-  List,
-  ListItem,
-  Tooltip,
-  IconButton,
-  Checkbox,
-} from "@material-ui/core";
+
+import { List, ListItem, IconButton, Checkbox } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-const {REACT_APP_SERVER_ADDRESS} = process.env;
+const { REACT_APP_SERVER_ADDRESS } = process.env;
 
 const TodoList = () => {
   useEffect(() => {
@@ -22,9 +18,11 @@ const TodoList = () => {
   const dispatch = useDispatch();
 
   const getAllTodoFromServer = async () => {
-    const response = await fetch(`${REACT_APP_SERVER_ADDRESS}allMissions`);
-    const allMissionsData = await response.json();
-    dispatch(setTodos(allMissionsData));
+    if ([...todos].length === 0) {
+      const response = await fetch(`${REACT_APP_SERVER_ADDRESS}allMissions`);
+      const allMissionsData = await response.json();
+      dispatch(setTodos(allMissionsData));
+    }
   };
 
   const toggleTodo = async (todoId) => {
@@ -44,7 +42,7 @@ const TodoList = () => {
   };
 
   return (
-    <List className="todo-list">
+    <List>
       {todos.map((todo) => (
         <ListItem key={todo.id}>
           <Checkbox
@@ -53,14 +51,9 @@ const TodoList = () => {
             onClick={() => toggleTodo(todo.id)}
           />
           <span>{todo.name}</span>
-          <Tooltip title="מחק">
-            <IconButton>
-              <DeleteIcon
-                className="delete-button"
-                onClick={() => deleteTodo(todo.id)}
-              ></DeleteIcon>
-            </IconButton>
-          </Tooltip>
+          <IconButton>
+            <DeleteIcon onClick={() => deleteTodo(todo.id)}></DeleteIcon>
+          </IconButton>
         </ListItem>
       ))}
     </List>

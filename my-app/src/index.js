@@ -1,6 +1,6 @@
-import { Box } from "@material-ui/core";
 import React from "react";
 import ReactDOM from "react-dom";
+import { Box } from "@material-ui/core";
 import App from "./App";
 import "./index.css";
 

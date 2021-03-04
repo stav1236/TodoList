@@ -1,4 +1,5 @@
 package Business;
+
 import Data.DataBase;
 import Models.Mission;
 
@@ -11,11 +12,11 @@ public class MissionBusiness {
     private static final String NO_FOUND_ERROR = "mission don't exist";
     private static final String EXISTING_MISSION_ERROR = "mission already exist";
 
-    public ArrayList<Mission> getALlMissions(){
+    public ArrayList<Mission> getALlMissions() {
         return DataBase.getInstance().missions;
     }
 
-    public String addMssion (Mission newMission){
+    public String addMssion(Mission newMission) {
         if (newMission != null) {
             Mission existedMission = getALlMissions().stream()
                     .filter(mission -> newMission.getId().equals(mission.getId()))
@@ -31,43 +32,39 @@ public class MissionBusiness {
             } else {
                 return NO_FOUND_ERROR;
             }
-        } else {
-            return EXISTING_MISSION_ERROR;
         }
+        return EXISTING_MISSION_ERROR;
     }
 
-    public String removeMissionById(Long idToDelete){
-        Mission missionToDelete = null;
-        for (Mission mission:
-             getALlMissions()) {
-            if (mission.getId().equals(idToDelete)){
-                missionToDelete = mission;
-            }
-        }
-        if (missionToDelete != null) {
+    public String removeMissionById(Long idToDelete) {
+        Mission missionToRemove = getALlMissions().stream()
+                .filter(mission -> idToDelete.equals(mission.getId()))
+                .findAny()
+                .orElse(null);
+        if (missionToRemove != null){
             try {
-                DataBase.getInstance().delete(missionToDelete);
+                DataBase.getInstance().delete(missionToRemove);
             } catch (IOException e) {
                 return WRITE_TO_DB_ERROR;
             }
             return SUCCESS_MSG;
-        } else {
-            return NO_FOUND_ERROR;
         }
+        return NO_FOUND_ERROR;
     }
 
-    public String changeStatusById(Long missionId){
-        for (Mission mission:
-                getALlMissions()) {
-            if (mission.getId().equals(missionId)){
-                mission.changeCompleteMode();
-                try {
-                    DataBase.getInstance().writeDataToDB();
-                } catch (IOException e) {
-                    return WRITE_TO_DB_ERROR;
-                }
-                return SUCCESS_MSG;
+    public String changeStatusById(Long missionId) {
+        Mission missionToChangeStatus = getALlMissions().stream()
+                .filter(mission -> missionId.equals(mission.getId()))
+                .findAny()
+                .orElse(null);
+        if (missionToChangeStatus != null) {
+            missionToChangeStatus.changeCompleteMode();
+            try {
+                DataBase.getInstance().writeDataToDB();
+            } catch (IOException e) {
+                return WRITE_TO_DB_ERROR;
             }
+            return SUCCESS_MSG;
         }
         return NO_FOUND_ERROR;
     }

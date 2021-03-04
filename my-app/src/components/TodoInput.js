@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { addTodoAction } from "../redux";
 import { useDispatch, useSelector } from "react-redux";
-import "alertifyjs/build/css/alertify.css";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+
+import { addTodoAction } from "../redux";
+
+import {
+  TextField,
+  Button,
+  withStyles,
+  CssBaseline,
+  ThemeProvider,
+  createMuiTheme,
+} from "@material-ui/core";
 import { lightGreen, grey } from "@material-ui/core/colors";
-import { withStyles } from "@material-ui/core/styles";
+
 import Swal from "sweetalert2";
+
 
 const AddButton = withStyles((theme) => ({
   root: {
@@ -28,7 +36,9 @@ const Toast = Swal.mixin({
   timerProgressBar: true,
 });
 
-const {REACT_APP_SERVER_ADDRESS} = process.env;
+const rtlTheme = createMuiTheme({ direction: "rtl" });
+
+const { REACT_APP_SERVER_ADDRESS } = process.env;
 
 const emptyMissionWarning = "יש להכניס שם משימה";
 const existMissionWarning = "לא ניתן להוסיף משימה קיימת";
@@ -37,8 +47,6 @@ const WARNING_ICON = "warning";
 const SUCCESS_ICON = "success";
 
 const TodoInput = () => {
-  console.log(process.env)
-
   const todosList = useSelector((state) => state.todos);
   const [newToDoText, setTodo] = useState("");
   const dispatch = useDispatch();
@@ -88,20 +96,21 @@ const TodoInput = () => {
   };
 
   return (
-    <div>
+    <ThemeProvider theme={rtlTheme}>
+      <CssBaseline />
       <form onSubmit={onSubmit}>
         <TextField
+          dir="rtl"
           id="newMissionNameInput"
           size="small"
           label="שם משימה"
           variant="outlined"
-          type="text"
           value={newToDoText}
           onChange={onChange}
         />
         <AddButton type="submit">הוסף</AddButton>
       </form>
-    </div>
+    </ThemeProvider>
   );
 };
 
