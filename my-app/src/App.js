@@ -8,6 +8,7 @@ import TodoList from "./components/TodoList";
 import TodoInfo from "./components/TodoInfo";
 import TodoSearch from "./components/TodoSearch";
 
+import { Box } from "@material-ui/core";
 import { StylesProvider, jssPreset } from "@material-ui/core/styles";
 
 import { create } from "jss";
@@ -17,17 +18,20 @@ const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const App = () => {
   return (
-    <StylesProvider jss={jss}>
-      <Provider store={store}>
-        <div>
-          <h1>TODO List</h1>
-          <TodoInput />
-          <TodoSearch />
-          <TodoList />
-          <TodoInfo />
-        </div>
-      </Provider>
-    </StylesProvider>
+    <Box display="flex" justifyContent="center">
+      <StylesProvider jss={jss}>
+        <Provider store={store}>
+          <div>
+            <h1>TODO List</h1>
+            <TodoInput />
+            <br/>
+            <TodoSearch />
+            <TodoList />
+            <TodoInfo />
+          </div>
+        </Provider>
+      </StylesProvider>
+    </Box>
   );
 };
 

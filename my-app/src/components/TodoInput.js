@@ -15,7 +15,6 @@ import { lightGreen, grey } from "@material-ui/core/colors";
 
 import Swal from "sweetalert2";
 
-
 const AddButton = withStyles((theme) => ({
   root: {
     color: theme.palette.getContrastText(lightGreen.A400),
@@ -63,7 +62,7 @@ const TodoInput = () => {
     });
   };
 
-  const onChange = (event) => {
+  const changeNewMisisonName = (event) => {
     setTodo(event.target.value);
   };
 
@@ -73,7 +72,7 @@ const TodoInput = () => {
     );
   };
 
-  const onSubmit = (event) => {
+  const submitAddingTodo = (event) => {
     event.preventDefault();
     if (!newToDoText) {
       Toast.fire({
@@ -98,15 +97,15 @@ const TodoInput = () => {
   return (
     <ThemeProvider theme={rtlTheme}>
       <CssBaseline />
-      <form onSubmit={onSubmit}>
+      <form onSubmit={submitAddingTodo}>
         <TextField
           dir="rtl"
           id="newMissionNameInput"
           size="small"
           label="שם משימה"
-          variant="outlined"
           value={newToDoText}
-          onChange={onChange}
+          onChange={changeNewMisisonName}
+          variant="outlined"
         />
         <AddButton type="submit">הוסף</AddButton>
       </form>

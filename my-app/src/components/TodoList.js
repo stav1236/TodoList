@@ -14,6 +14,7 @@ const TodoList = () => {
   });
 
   const todos = useSelector((state) => state.todos);
+  const filterWord = useSelector((state) => state.filterWord);
 
   const dispatch = useDispatch();
 
@@ -41,9 +42,15 @@ const TodoList = () => {
     dispatch(deleteTodoAction(todoId));
   };
 
+  const filteredTodosList = () => {
+    return todos.filter((todo) =>
+      todo.name.toLowerCase().includes(filterWord.toLowerCase())
+    );
+  };
+
   return (
     <List>
-      {todos.map((todo) => (
+      {filteredTodosList().map((todo) => (
         <ListItem key={todo.id}>
           <Checkbox
             color="primary"

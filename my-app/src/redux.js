@@ -7,6 +7,11 @@ const reducer = (state, action) => {
         ...state,
         todos: action.payload,
       };
+    case "SET_FILTERWORD":
+      return {
+        ...state,
+        filterWord: action.payload,
+      };
     case "ADD_TODO":
       return {
         ...state,
@@ -29,7 +34,7 @@ const reducer = (state, action) => {
     default:
       return state;
   }
-}
+};
 
 export const addTodoAction = (todo) => ({
   type: "ADD_TODO",
@@ -51,8 +56,14 @@ export const setTodos = (todoList) => ({
   payload: todoList,
 });
 
+export const setFilterWord = (newFilterWord) => ({
+  type: "SET_FILTERWORD",
+  payload: newFilterWord,
+});
+
 const initialState = {
-  todos: []
+  todos: [],
+  filterWord: "",
 };
 
 export const store = createStore(
