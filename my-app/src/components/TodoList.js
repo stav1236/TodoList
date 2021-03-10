@@ -1,10 +1,9 @@
 import { useEffect } from "react";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { useSelector, useDispatch } from "react-redux";
+import { List, ListItem, IconButton, Checkbox } from "@material-ui/core";
 
 import { toggleTodoComplete, deleteTodoAction, setTodos } from "../redux";
-
-import { List, ListItem, IconButton, Checkbox } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
 
 const { REACT_APP_SERVER_ADDRESS } = process.env;
 

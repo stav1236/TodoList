@@ -1,16 +1,8 @@
 import { useDispatch } from "react-redux";
-import { setFilterWord } from "../redux";
-
-import {
-  TextField,
-  CssBaseline,
-  ThemeProvider,
-  createMuiTheme,
-  IconButton,
-} from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
+import { TextField, IconButton } from "@material-ui/core";
 
-const rtlTheme = createMuiTheme({ direction: "rtl" });
+import { setFilterWord } from "../redux";
 
 const TodoSearch = () => {
   const dispatch = useDispatch();
@@ -20,21 +12,17 @@ const TodoSearch = () => {
   };
 
   return (
-    <ThemeProvider theme={rtlTheme}>
-      <CssBaseline />
-      <form>
-        <TextField
-          dir="rtl"
-          id="searchMission"
-          size="small"
-          label="חיפוש"
-          onChange={changeFilterText}
-        />
-        <IconButton>
-          <SearchIcon />
-        </IconButton>
-      </form>
-    </ThemeProvider>
+    <form>
+      <TextField
+        dir="rtl"
+        size="small"
+        label="חיפוש"
+        onChange={changeFilterText}
+      />
+      <IconButton>
+        <SearchIcon />
+      </IconButton>
+    </form>
   );
 };
 

@@ -1,19 +1,10 @@
+import Swal from "sweetalert2";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { lightGreen, grey } from "@material-ui/core/colors";
+import { TextField, Button, withStyles } from "@material-ui/core";
 
 import { addTodoAction } from "../redux";
-
-import {
-  TextField,
-  Button,
-  withStyles,
-  CssBaseline,
-  ThemeProvider,
-  createMuiTheme,
-} from "@material-ui/core";
-import { lightGreen, grey } from "@material-ui/core/colors";
-
-import Swal from "sweetalert2";
 
 const AddButton = withStyles((theme) => ({
   root: {
@@ -34,8 +25,6 @@ const Toast = Swal.mixin({
   timer: 1500,
   timerProgressBar: true,
 });
-
-const rtlTheme = createMuiTheme({ direction: "rtl" });
 
 const { REACT_APP_SERVER_ADDRESS } = process.env;
 
@@ -95,21 +84,17 @@ const TodoInput = () => {
   };
 
   return (
-    <ThemeProvider theme={rtlTheme}>
-      <CssBaseline />
-      <form onSubmit={submitAddingTodo}>
-        <TextField
-          dir="rtl"
-          id="newMissionNameInput"
-          size="small"
-          label="שם משימה"
-          value={newToDoText}
-          onChange={changeNewMisisonName}
-          variant="outlined"
-        />
-        <AddButton type="submit">הוסף</AddButton>
-      </form>
-    </ThemeProvider>
+    <form onSubmit={submitAddingTodo}>
+      <TextField
+        dir="rtl"
+        size="small"
+        label="שם משימה"
+        value={newToDoText}
+        onChange={changeNewMisisonName}
+        variant="outlined"
+      />
+      <AddButton type="submit">הוסף</AddButton>
+    </form>
   );
 };
 
